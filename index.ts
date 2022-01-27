@@ -82,9 +82,17 @@ const handleInput = (event: InputEvent) => {
     const selStart = input.selectionStart || 0;
 
     if (!inputType || inputType.startsWith("insert")) {
-        input.value = completePhoneNumber(rawValue);
+        const completedValue = completePhoneNumber(rawValue);
+
+        if (completedValue.length < rawValue.length && isPartialFormattedPhone(rawValue)) {
+            // Keep value, if it is correct and phone completion
+            return;
+        } else {
+            input.value = completedValue;
+        }
+
         if (!(selStart == rawValue.length)) {
-            // Cursor in the end
+            // Keep cursor position, if it wasn't in the end
             input.selectionStart = input.selectionEnd = selStart;
         }
     } else if (inputType.startsWith("delete")) {
