@@ -1,7 +1,10 @@
 {
   "name": "phone-input",
   "version": "0.0.1",
-  "description": "\uD83E\uDD19\uD83C\uDFFC Phone number input, which understands you.",
+  "description": "🤙🏼 Phone number input, which understands you.",
   "author": "evermake",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.5.5"
+  }
 }
