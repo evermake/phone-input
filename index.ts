@@ -101,7 +101,7 @@ function handleRussianPhoneInput(event: InputEvent) {
             input.value = completedValue;
         }
 
-        if (!(selStart == rawValue.length)) {
+        if (!(selStart === rawValue.length)) {
             // Keep cursor position, if it wasn't in the end
             input.selectionStart = input.selectionEnd = selStart;
         }
