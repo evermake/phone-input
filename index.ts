@@ -1,6 +1,6 @@
 const getNumbers = (s: string) => s.replaceAll(/\D+/g, "");
 
-// Generated using snippet from StackOverflow:
+// Generated using Lucas Trzesniewski's snippet from StackOverflow:
 // https://stackoverflow.com/questions/22483214/regex-check-if-input-still-has-chances-to-become-matching/41580048#41580048
 const partialFormattedPhoneRegex = /^((?:\+|$)(?:7|$)|(?:8|$)|$)(?: |$)(?:\(|$)(?:\d|$)(?:\d|$)(?:\d|$)(?:\)|$)(?: |$)(?:\d|$)(?:\d|$)(?:\d|$)(?:-|$)(?:\d|$)(?:\d|$)(?:-|$)(?:\d|$)(?:\d|$)$/;
 const isPartialFormattedPhone = (s: string) => Boolean(
@@ -8,11 +8,11 @@ const isPartialFormattedPhone = (s: string) => Boolean(
 );
 
 const stringNumbersPhoneRegex = /^[78]?\d{10}$/;
-const areStringNumbersPhone = (s: string) => Boolean(
+const isCompleteRussianPhone = (s: string) => Boolean(
     getNumbers(s).match(stringNumbersPhoneRegex),
 );
 
-const completePhoneNumber = (s: string): string => {
+const formatRussianPhoneNumber = (s: string): string => {
     let numbers = getNumbers(s);
     let phone = "";
 
@@ -59,22 +59,32 @@ const completePhoneNumber = (s: string): string => {
     return phone;
 };
 
-let pastedData = "";
-
-const handlePaste = (event: ClipboardEvent) => {
-    pastedData = event.clipboardData?.getData("text") || "";
-};
-
-const handleInput = (event: InputEvent) => {
-    const input = event.currentTarget as HTMLInputElement;
-
-    if (pastedData && areStringNumbersPhone(pastedData)) {
-        // User pasted a complete and valid phone number
-        // Format it and set to input value
-        input.value = completePhoneNumber(pastedData);
-        pastedData = "";
-        return;
+function formatInternationalPhone(value: string): string {
+    if (value) {
+        return "+" + getNumbers(value).slice(0, 16);
     }
+    return "";
+}
+
+function handleRussianPhonePaste(event: ClipboardEvent) {
+    const input = event.currentTarget as HTMLInputElement;
+    const clipboardData = event.clipboardData || (window as any).clipboardData;
+    const pastedData = clipboardData.getData("Text");
+
+    if (input && pastedData && isCompleteRussianPhone(pastedData)) {
+        event.stopPropagation();
+        event.preventDefault();
+
+        // User pasted a complete and valid russian phone number, so
+        // format it and update input value
+        input.value = formatRussianPhoneNumber(pastedData);
+    }
+
+    // Otherwise, there will be a default behavior
+}
+
+function handleRussianPhoneInput(event: InputEvent) {
+    const input = event.currentTarget as HTMLInputElement;
 
     const rawValue: string = input.value;
     const inputType = event.inputType as (string | undefined);
@@ -82,10 +92,10 @@ const handleInput = (event: InputEvent) => {
     const selStart = input.selectionStart || 0;
 
     if (!inputType || inputType.startsWith("insert")) {
-        const completedValue = completePhoneNumber(rawValue);
+        const completedValue = formatRussianPhoneNumber(rawValue);
 
         if (completedValue.length < rawValue.length && isPartialFormattedPhone(rawValue)) {
-            // Keep value, if it is correct and phone completion
+            // Keep value, if it is correct
             return;
         } else {
             input.value = completedValue;
@@ -101,17 +111,48 @@ const handleInput = (event: InputEvent) => {
         if (firstDigit !== "7" && firstDigit !== "8") {
             input.value = "";
         } else if (!isPartialFormattedPhone(rawValue)) {
-            input.value = completePhoneNumber(rawValue);
+            input.value = formatRussianPhoneNumber(rawValue);
             input.selectionStart = input.selectionEnd = selStart;
         }
+    } else {
+        input.value = formatRussianPhoneNumber(rawValue)
     }
-};
+}
+
+function handleInternationalPhoneInput(event: InputEvent) {
+    const input = event.currentTarget as HTMLInputElement;
+    input.value = formatInternationalPhone(input.value)
+}
 
 (function init() {
-    document
-        .querySelectorAll("input.phone-input")
-        .forEach(input => {
-            input.addEventListener("input", handleInput as any);
-            input.addEventListener("paste", handlePaste as any);
-        });
+    const label = document.getElementById("phone-label") as HTMLLabelElement;
+    const input = document.getElementById("phone-input") as HTMLInputElement;
+    const button = document.getElementById("phone-button") as HTMLButtonElement;
+
+    let isRussian = true
+
+    const updateInputType = () => {
+        if (isRussian) {
+            label.innerHTML = "Phone number (RU)";
+            button.innerHTML = "Change to international format";
+            input.removeEventListener("input", handleInternationalPhoneInput as any);
+            input.addEventListener("input", handleRussianPhoneInput as any);
+            input.addEventListener("paste", handleRussianPhonePaste as any);
+            input.value = formatRussianPhoneNumber(input.value);
+        } else {
+            label.innerHTML = "Phone number";
+            button.innerHTML = "Change to russian format";
+            input.removeEventListener("input", handleRussianPhoneInput as any);
+            input.removeEventListener("paste", handleRussianPhonePaste as any);
+            input.addEventListener("input", handleInternationalPhoneInput as any);
+            input.value = formatInternationalPhone(input.value);
+        }
+    }
+
+    button.addEventListener("click", () => {
+        isRussian = !isRussian
+        updateInputType()
+    });
+
+    updateInputType();
 })();
