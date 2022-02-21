@@ -4,6 +4,8 @@
   "description": "🤙🏼 Phone number input, which understands you.",
   "author": "evermake",
   "license": "MIT",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.12.1",
     "@typescript-eslint/parser": "^5.12.1",
