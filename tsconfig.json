@@ -1,11 +1,9 @@
 {
   "compilerOptions": {
-    "target": "es2021",
     "module": "commonjs",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "skipLibCheck": true
+    "target": "es2021",
+    "declaration": true,
+    "outDir": "dist"
   },
   "include": ["src/**/*"]
 }
