@@ -1,20 +1,14 @@
-name: Setup Node with dependencies
+name: CI/CD
 
 on:
-  workflow_call:
-    inputs:
-      node-version:
-        default: '16'
-        required: false
-        type: string
+  push:
 
-runs:
-  using: composite
-  steps:
+jobs:
+  lint:
     - name: Setup Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: ${{ inputs.node-version }}
+        node-version: 16
     - name: Cache pnpm modules
       uses: actions/cache@v2
       with:
@@ -27,3 +21,12 @@ runs:
       with:
         version: latest
         run_install: true
+    - name: Build
+      if: github.ref == 'refs/heads/main'
+      run: npm run build
+    - name: Release
+      if: github.ref == 'refs/heads/main'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      run: npx semantic-release
