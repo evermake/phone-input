@@ -1,13 +1,13 @@
 {
   "name": "@evermake/phone-input",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "🤙🏼 Phone number input, which understands you.",
   "author": "evermake",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "/dist"
+    "dist/**/*"
   ],
   "scripts": {
       "format": "prettier --write \"src/**/*\" && eslint --fix src/**/*",
