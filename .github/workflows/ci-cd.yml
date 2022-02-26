@@ -4,29 +4,31 @@ on:
   push:
 
 jobs:
-  lint:
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: 16
-    - name: Cache pnpm modules
-      uses: actions/cache@v2
-      with:
-        path: ~/.pnpm-store
-        key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-
-    - name: Install pnpm and dependencies
-      uses: pnpm/action-setup@v2.1.0
-      with:
-        version: latest
-        run_install: true
-    - name: Build
-      if: github.ref == 'refs/heads/main'
-      run: npm run build
-    - name: Release
-      if: github.ref == 'refs/heads/main'
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      run: npx semantic-release
+  ci-cd:
+    name: CI/CD
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - name: Cache pnpm modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+      - name: Install pnpm and dependencies
+        uses: pnpm/action-setup@v2.1.0
+        with:
+          version: latest
+          run_install: true
+      - name: Build
+        if: github.ref == 'refs/heads/main'
+        run: npm run build
+      - name: Release
+        if: github.ref == 'refs/heads/main'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release
