@@ -15,7 +15,8 @@
   ],
   "scripts": {
     "format": "prettier --write \"src/**/*\" && eslint --fix src/**/*",
-    "lint": "prettier --check \"src/**/*\" && eslint src/**/*"
+    "lint": "prettier --check \"src/**/*\" && eslint src/**/*",
+    "build": "tsc"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.12.1",
