@@ -1,11 +1,11 @@
-name: CI/CD
+name: Lint
 
 on:
   push:
 
 jobs:
-  ci-cd:
-    name: CI/CD
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,12 +26,5 @@ jobs:
         with:
           version: latest
           run_install: true
-      - name: Build
-        if: github.ref == 'refs/heads/main'
-        run: npm run build
-      - name: Release
-        if: github.ref == 'refs/heads/main'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx semantic-release
+      - name: Lint
+        run: npm run lint
