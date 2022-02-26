@@ -4,14 +4,18 @@
   "description": "🤙🏼 Phone number input, which understands you.",
   "author": "evermake",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/evermake/phone-input"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist/**/*"
   ],
   "scripts": {
-      "format": "prettier --write \"src/**/*\" && eslint --fix src/**/*",
-      "lint": "prettier \"src/**/*\" && eslint src/**/*"
+    "format": "prettier --write \"src/**/*\" && eslint --fix src/**/*",
+    "lint": "prettier \"src/**/*\" && eslint src/**/*"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.12.1",
