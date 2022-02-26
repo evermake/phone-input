@@ -1,4 +1,4 @@
-name: Setup project
+name: Setup Node with dependencies
 
 on:
   workflow_call:
@@ -11,8 +11,6 @@ on:
 runs:
   using: composite
   steps:
-    - name: Checkout
-      uses: actions/checkout@v2
     - name: Setup Node.js
       uses: actions/setup-node@v2
       with:
